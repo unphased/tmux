@@ -61,7 +61,13 @@ const struct tty_acs_entry tty_acs_table[] = {
 	{ '{', "\317\200" },   		/* greek pi */
 	{ '|', "\342\211\240" },	/* not-equal */
 	{ '}', "\302\243" },		/* UK pound sign */
-	{ '~', "\302\267" }		/* bullet */
+	{ '~', "\302\267" },		/* bullet */
+
+	{ 'J', "\342\226\230" },	/* upper left quadrant (lower right) */
+	{ 'K', "\342\226\226" },	/* bottom left quadrant (upper right) */
+	{ 'L', "\342\226\227" },	/* bottom right quadrant (upper left) */
+	{ 'M', "\342\226\235" }		/* upper right quadrant (lower left) */
+
 };
 
 int
