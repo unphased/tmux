@@ -257,6 +257,23 @@ grid_free_line(struct grid *gd, u_int py)
 	gd->linedata[py].extddata = NULL;
 }
 
+/**
+ * @fn timespec_diff(struct timespec *, struct timespec *, struct timespec *)
+ * @brief Compute the diff of two timespecs, that is a - b = result.
+ * @param a the minuend
+ * @param b the subtrahend
+ * @param result a - b
+ */
+static inline void timespec_diff(const struct timespec * const a, const struct timespec * const b,
+		struct timespec * const result) {
+	result->tv_sec  = a->tv_sec  - b->tv_sec;
+	result->tv_nsec = a->tv_nsec - b->tv_nsec;
+	if (result->tv_nsec < 0) {
+		--result->tv_sec;
+		result->tv_nsec += 1000000000L;
+	}
+}
+
 /* Free several lines. */
 static void
 grid_free_lines(struct grid *gd, u_int py, u_int ny)
@@ -266,7 +283,14 @@ grid_free_lines(struct grid *gd, u_int py, u_int ny)
 	for (yy = py; yy < py + ny; yy++)
 		grid_free_line(gd, yy);
 #ifdef HAVE_MALLOC_TRIM
+	struct timespec begin;
+	struct timespec end;
+	struct timespec diff;
+	clock_gettime(CLOCK_MONOTONIC_RAW, &begin);
 	malloc_trim(0);
+	clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+	timespec_diff(&end, &begin, &diff);
+	log_debug("malloc_trim %ld.%09ld", diff.tv_sec, diff.tv_nsec);
 #endif
 }
 
